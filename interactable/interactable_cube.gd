@@ -6,7 +6,7 @@ func _ready() -> void:
 	for node in get_tree().get_nodes_in_group("attractor"):
 		attractors.append(node as Attractor)
 
-func _physics_process(delta: float) -> void:
+func _physics_process(_delta: float) -> void:
 	for attractor in attractors:
 		if not attractor.is_enabled:
 			continue

@@ -2,7 +2,7 @@ extends RigidBody3D
 
 const SPEED: float = 30.0
 
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	if not multiplayer.is_server():
 		return
 	$Attractor.is_enabled = Input.is_action_pressed("attract")

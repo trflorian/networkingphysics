@@ -1,11 +1,11 @@
 [gd_scene load_steps=18 format=3 uid="uid://dhpqv13udtrnv"]
 
-[ext_resource type="Script" path="res://cube_controller.gd" id="1_d18xq"]
-[ext_resource type="Script" path="res://follow_cube.gd" id="1_wohpx"]
-[ext_resource type="Script" path="res://interactable_cube_spawner.gd" id="3_2ugmp"]
-[ext_resource type="Script" path="res://attractor.gd" id="3_fttvg"]
-[ext_resource type="PackedScene" uid="uid://c2c7yvk1vqcim" path="res://interactable_cube.tscn" id="4_rxrc6"]
-[ext_resource type="Script" path="res://network_manager.gd" id="5_i0s8a"]
+[ext_resource type="Script" path="res://player/cube_controller.gd" id="1_d18xq"]
+[ext_resource type="Script" path="res://player/follow_cube.gd" id="1_wohpx"]
+[ext_resource type="Script" path="res://interactable/interactable_cube_spawner.gd" id="3_2ugmp"]
+[ext_resource type="Script" path="res://physics/attractor.gd" id="3_fttvg"]
+[ext_resource type="PackedScene" uid="uid://c2c7yvk1vqcim" path="res://interactable/interactable_cube.tscn" id="4_rxrc6"]
+[ext_resource type="Script" path="res://networking/network_manager.gd" id="5_i0s8a"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_fm1sb"]
 sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
