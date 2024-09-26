@@ -1,0 +1,121 @@
+[gd_scene load_steps=18 format=3 uid="uid://dhpqv13udtrnv"]
+
+[ext_resource type="Script" path="res://cube_controller.gd" id="1_d18xq"]
+[ext_resource type="Script" path="res://follow_cube.gd" id="1_wohpx"]
+[ext_resource type="Script" path="res://interactable_cube_spawner.gd" id="3_2ugmp"]
+[ext_resource type="Script" path="res://attractor.gd" id="3_fttvg"]
+[ext_resource type="PackedScene" uid="uid://c2c7yvk1vqcim" path="res://interactable_cube.tscn" id="4_rxrc6"]
+[ext_resource type="Script" path="res://network_manager.gd" id="5_i0s8a"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_fm1sb"]
+sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
+ground_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
+
+[sub_resource type="Sky" id="Sky_4xvs2"]
+sky_material = SubResource("ProceduralSkyMaterial_fm1sb")
+
+[sub_resource type="Environment" id="Environment_ho4fv"]
+background_mode = 1
+background_color = Color(1, 1, 1, 1)
+background_energy_multiplier = 3.0
+sky = SubResource("Sky_4xvs2")
+ambient_light_source = 3
+tonemap_mode = 2
+ssao_radius = 19.65
+ssao_intensity = 12.9
+ssil_radius = 5.28
+sdfgi_bounce_feedback = 1.2
+glow_bloom = 0.36
+adjustment_brightness = 1.53
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_8jlsq"]
+rough = true
+absorbent = true
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_tnwof"]
+size = Vector2(100, 100)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_jm71k"]
+size = Vector3(100, 1, 100)
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_6f0aj"]
+rough = true
+absorbent = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_11r7t"]
+albedo_color = Color(1, 0, 0, 1)
+emission_energy_multiplier = 10.77
+
+[sub_resource type="BoxMesh" id="BoxMesh_iy66w"]
+material = SubResource("StandardMaterial3D_11r7t")
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_vaouo"]
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_voq0o"]
+properties/0/path = NodePath(".:position")
+properties/0/spawn = true
+properties/0/replication_mode = 1
+properties/1/path = NodePath(".:rotation")
+properties/1/spawn = true
+properties/1/replication_mode = 1
+properties/2/path = NodePath(".:linear_velocity")
+properties/2/spawn = true
+properties/2/replication_mode = 1
+properties/3/path = NodePath("Attractor:is_enabled")
+properties/3/spawn = true
+properties/3/replication_mode = 1
+
+[node name="World" type="Node3D"]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_ho4fv")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.632956, -0.690583, 0.349945, 0.0623348, 0.496009, 0.866077, -0.771674, -0.526375, 0.356999, 0, 0, 0)
+shadow_enabled = true
+
+[node name="Camera3D" type="Camera3D" parent="." node_paths=PackedStringArray("cube")]
+transform = Transform3D(1, 0, 0, 0, 0.866025, 0.5, 0, -0.5, 0.866025, 0, 4, 5)
+script = ExtResource("1_wohpx")
+cube = NodePath("../PlayerCube")
+
+[node name="Ground" type="StaticBody3D" parent="."]
+physics_material_override = SubResource("PhysicsMaterial_8jlsq")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Ground"]
+mesh = SubResource("PlaneMesh_tnwof")
+skeleton = NodePath("../..")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
+shape = SubResource("BoxShape3D_jm71k")
+
+[node name="PlayerCube" type="RigidBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+physics_material_override = SubResource("PhysicsMaterial_6f0aj")
+script = ExtResource("1_d18xq")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="PlayerCube"]
+transform = Transform3D(0.999994, -0.00264495, 0.00224961, 0.00264794, 0.999996, -0.00132504, -0.00224609, 0.00133099, 0.999997, 0, 0, 0)
+mesh = SubResource("BoxMesh_iy66w")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="PlayerCube"]
+shape = SubResource("BoxShape3D_vaouo")
+
+[node name="Attractor" type="Node3D" parent="PlayerCube" groups=["attractor"]]
+script = ExtResource("3_fttvg")
+attraction_force = 0.5
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="PlayerCube"]
+replication_interval = 0.1
+delta_interval = 0.1
+replication_config = SubResource("SceneReplicationConfig_voq0o")
+
+[node name="InteractableCubeSpawner" type="Node3D" parent="."]
+script = ExtResource("3_2ugmp")
+grid_size = 25
+grid_spacing = 1.0
+cube_prefab = ExtResource("4_rxrc6")
+
+[node name="NetworkManager" type="Node" parent="."]
+script = ExtResource("5_i0s8a")
